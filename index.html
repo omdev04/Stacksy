@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖼️</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stacksy — Real-Time Photo Interaction Gallery</title>
+    <!-- Outfit Font representing Saans style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Visual Error Debugging Helper -->
+    <script>
+      window.addEventListener('error', function(e) {
+        var errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '10px';
+        errorDiv.style.left = '10px';
+        errorDiv.style.right = '10px';
+        errorDiv.style.bottom = '10px';
+        errorDiv.style.background = 'rgba(20, 20, 20, 0.98)';
+        errorDiv.style.color = '#ff6b6b';
+        errorDiv.style.padding = '24px';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.style.fontSize = '14px';
+        errorDiv.style.lineHeight = '1.6';
+        errorDiv.style.zIndex = '999999';
+        errorDiv.style.overflow = 'auto';
+        errorDiv.style.border = '2px solid #ff4757';
+        errorDiv.style.borderRadius = '12px';
+        errorDiv.style.boxShadow = '0 20px 40px rgba(0,0,0,0.6)';
+        errorDiv.innerHTML = '<h3 style="color:#ff4757;margin-top:0;font-size:18px;">⚠️ Runtime Error</h3>' +
+                             '<strong>Message:</strong> ' + e.message + '<br>' +
+                             '<strong>Source:</strong> ' + e.filename + ':' + e.lineno + ':' + e.colno + '<br><br>' +
+                             '<strong>Stack trace:</strong><pre style="background:#111;padding:12px;border-radius:6px;color:#eee;white-space:pre-wrap;word-break:break-all;margin-top:8px;">' + (e.error ? e.error.stack : 'N/A') + '</pre>';
+        document.body.appendChild(errorDiv);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var errorDiv = document.createElement('div');
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '10px';
+        errorDiv.style.left = '10px';
+        errorDiv.style.right = '10px';
+        errorDiv.style.bottom = '10px';
+        errorDiv.style.background = 'rgba(20, 20, 20, 0.98)';
+        errorDiv.style.color = '#ff9f43';
+        errorDiv.style.padding = '24px';
+        errorDiv.style.fontFamily = 'monospace';
+        errorDiv.style.fontSize = '14px';
+        errorDiv.style.lineHeight = '1.6';
+        errorDiv.style.zIndex = '999999';
+        errorDiv.style.overflow = 'auto';
+        errorDiv.style.border = '2px solid #ff9f43';
+        errorDiv.style.borderRadius = '12px';
+        errorDiv.style.boxShadow = '0 20px 40px rgba(0,0,0,0.6)';
+        errorDiv.innerHTML = '<h3 style="color:#ff9f43;margin-top:0;font-size:18px;">⚠️ Unhandled Promise Rejection</h3>' +
+                             '<strong>Reason:</strong> ' + (e.reason ? (e.reason.message || e.reason) : 'N/A') + '<br><br>' +
+                             '<strong>Stack trace:</strong><pre style="background:#111;padding:12px;border-radius:6px;color:#eee;white-space:pre-wrap;word-break:break-all;margin-top:8px;">' + (e.reason && e.reason.stack ? e.reason.stack : 'N/A') + '</pre>';
+        document.body.appendChild(errorDiv);
+      });
+    </script>
+  </head>
+  <body class="bg-brand-surface-muted text-white min-h-screen selection:bg-white selection:text-black">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

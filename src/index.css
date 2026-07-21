@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-text-primary: #141414;
+    --color-text-secondary: #707070;
+    --color-text-tertiary: #adadad;
+    --color-surface-raised: #ffffff;
+    --color-surface-base: #404040;
+    --color-surface-muted: #000000;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'saans', 'saans Fallback', 'Outfit', sans-serif;
+    background-color: var(--color-surface-muted);
+    color: #ffffff;
+  }
+}
+
+/* Custom Scrollbar for sleek UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-muted);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-base);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* Feed item slide-in animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Focus Ring Customization */
+.focus-visible-ring:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
