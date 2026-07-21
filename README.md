@@ -55,17 +55,14 @@ const schema = i.schema({
       username: i.string(),
       userColor: i.string(),
       createdAt: i.number(),
-      // Embedded image data for rich feed previews
       imageThumb: i.string().optional(),
       imageUrl: i.string().optional(),
       imageAuthor: i.string().optional(),
       imageDesc: i.string().optional(),
     }),
     comments: i.entity({
-      // Similar structure for comments
       imageId: i.string(),
       text: i.string(),
-      // ... username, userColor, createdAt, and embedded image data
     }),
   },
 });
