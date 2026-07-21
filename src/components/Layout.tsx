@@ -37,7 +37,7 @@ export const Layout: React.FC<LayoutProps> = ({ galleryComponent, feedComponent 
             <div className="bg-gradient-to-tr from-neutral-900 to-neutral-800 p-2 rounded-brand-xs border border-neutral-800 text-white shrink-0 shadow-lg flex items-center justify-center transition-transform hover:scale-105 duration-brand-fast">
               <Layers className="w-4 h-4 text-white" />
             </div>
-            
+
             <div className="hidden sm:flex flex-col justify-center">
               <h1 className="text-brand-sm font-extrabold tracking-[0.15em] text-white uppercase leading-none bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-neutral-400">
                 Stacksy
@@ -106,7 +106,7 @@ export const Layout: React.FC<LayoutProps> = ({ galleryComponent, feedComponent 
       </header>
 
       {/* Main Content Workspace */}
-      <main className="flex-1 max-w-[1440px] mx-auto w-full px-brand-4 py-brand-4 flex gap-brand-4 relative overflow-hidden">
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-2 sm:px-brand-4 py-2 sm:py-brand-4 flex flex-col md:flex-row gap-2 sm:gap-brand-4 relative overflow-hidden">
         {/* Gallery Pane (Left/Center) */}
         <section className="flex-1 flex flex-col min-w-0">
           {galleryComponent}

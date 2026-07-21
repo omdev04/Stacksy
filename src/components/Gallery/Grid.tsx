@@ -68,7 +68,7 @@ export const Grid: React.FC = () => {
       {/* Search & Category Filter Ribbon */}
       <div className="flex flex-col gap-brand-3 md:flex-row md:items-center justify-center">
         {/* Categories */}
-        <div className="flex items-center justify-center gap-brand-2 overflow-x-auto pb-1 scrollbar-none mx-auto">
+        <div className="flex items-center justify-start md:justify-center gap-brand-2 overflow-x-auto pb-2 pt-1 px-2 w-full scrollbar-none">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -84,7 +84,7 @@ export const Grid: React.FC = () => {
         </div>
 
         {/* Search Input (Mobile Only) */}
-        <form onSubmit={handleSearchSubmit} className="relative max-w-sm w-full md:hidden">
+        <form onSubmit={handleSearchSubmit} className="relative w-full px-2 md:hidden">
           <input
             type="text"
             placeholder="Search high-res photos..."
@@ -142,7 +142,7 @@ export const Grid: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-brand-4">
-          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-brand-3">
+          <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-2 sm:gap-brand-3 px-2 sm:px-0">
             {photos.map((photo) => (
               <Card key={photo.id} photo={photo} />
             ))}

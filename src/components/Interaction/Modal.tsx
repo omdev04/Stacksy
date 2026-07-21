@@ -22,17 +22,17 @@ export const Modal: React.FC = () => {
   const { data, isLoading } = db.useQuery(
     imageId
       ? {
-          comments: {
-            $: {
-              where: { imageId },
-            },
+        comments: {
+          $: {
+            where: { imageId },
           },
-          reactions: {
-            $: {
-              where: { imageId },
-            },
+        },
+        reactions: {
+          $: {
+            where: { imageId },
           },
-        }
+        },
+      }
       : null
   );
 
@@ -143,20 +143,20 @@ export const Modal: React.FC = () => {
   const sortedComments = [...comments].sort((a, b) => a.createdAt - b.createdAt);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 md:p-6 select-none">
+    <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-0 md:p-6 select-none">
       {/* Click outside to close */}
-      <div className="absolute inset-0" onClick={() => store.setSelectedImageId(null)} />
+      <div className="absolute inset-0 hidden md:block" onClick={() => store.setSelectedImageId(null)} />
 
       {/* Modal Card */}
       <div
         ref={modalRef}
-        className="relative bg-brand-surface-muted border border-neutral-900/80 rounded-brand-sm w-full max-w-5xl h-[92vh] md:h-[85vh] flex flex-col md:flex-row overflow-hidden shadow-2xl animate-slide-in outline-none shadow-[0_0_50px_-12px_rgba(255,255,255,0.05)]"
+        className="relative bg-brand-surface-muted border-0 md:border border-neutral-900/80 rounded-none md:rounded-brand-sm w-full h-full md:h-[85vh] max-w-5xl flex flex-col md:flex-row overflow-hidden shadow-none md:shadow-2xl animate-slide-in outline-none"
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
       >
         {/* Left Column: Image Area */}
-        <div className="flex-1 bg-black flex items-center justify-center relative p-4 md:p-0 min-h-[40vh] md:min-h-0">
+        <div className="w-full bg-black flex items-center justify-center relative p-0 shrink-0 h-[40vh] md:h-auto md:flex-1 md:min-h-0">
           {/* Close Button floating top-right of the image area */}
           <button
             onClick={() => store.setSelectedImageId(null)}
@@ -165,7 +165,7 @@ export const Modal: React.FC = () => {
           >
             <X className="w-4 h-4" />
           </button>
-          
+
           <img
             src={details.url}
             alt={details.description}
@@ -174,8 +174,8 @@ export const Modal: React.FC = () => {
         </div>
 
         {/* Right Column: Interaction Hub sidebar */}
-        <div className="w-full md:w-[400px] bg-brand-surface-muted border-t md:border-t-0 md:border-l border-neutral-900/40 flex flex-col h-[52vh] md:h-full min-w-0">
-          
+        <div className="w-full md:w-[400px] bg-brand-surface-muted border-t md:border-t-0 md:border-l border-neutral-900/40 flex flex-col flex-1 min-h-0 min-w-0">
+
           {/* Header Info */}
           <div className="p-6 pb-4 shrink-0">
             <span className="text-[10px] tracking-widest font-semibold text-neutral-500 uppercase mb-1 block">Artist</span>
@@ -202,11 +202,10 @@ export const Modal: React.FC = () => {
                     <button
                       key={emoji}
                       onClick={() => handleEmojiReact(emoji)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all duration-300 active:scale-95 ${
-                        hasReacted
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all duration-300 active:scale-95 ${hasReacted
                           ? 'bg-neutral-800 text-white font-bold ring-1 ring-neutral-700'
                           : 'bg-neutral-900/50 hover:bg-neutral-800 text-neutral-400 hover:text-white'
-                      }`}
+                        }`}
                     >
                       <span>{emoji}</span>
                       {totalReacts > 0 && <span className="text-[11px] font-bold opacity-90">{totalReacts}</span>}
@@ -218,11 +217,10 @@ export const Modal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsPickerOpen(!isPickerOpen)}
-                  className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-lg transition-all duration-300 active:scale-95 ${
-                    isPickerOpen
+                  className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-lg transition-all duration-300 active:scale-95 ${isPickerOpen
                       ? 'bg-neutral-800 text-white'
                       : 'bg-neutral-900/50 hover:bg-neutral-800 text-neutral-400 hover:text-white'
-                  }`}
+                    }`}
                   title="Add reaction"
                 >
                   +

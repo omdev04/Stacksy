@@ -109,9 +109,8 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
               <button
                 key={emoji}
                 onClick={(e) => handleQuickReact(emoji, e)}
-                className={`text-brand-md transform hover:scale-125 hover:rotate-6 active:scale-95 transition-all p-1 rounded-brand-md ${
-                  hasReacted ? 'bg-white/20 border border-white/20' : 'hover:bg-white/10'
-                }`}
+                className={`text-brand-md transform hover:scale-125 hover:rotate-6 active:scale-95 transition-all p-1 rounded-brand-md ${hasReacted ? 'bg-white/20 border border-white/20' : 'hover:bg-white/10'
+                  }`}
                 title={`${hasReacted ? 'Remove' : 'React'} ${emoji}`}
               >
                 {emoji}
@@ -140,11 +139,10 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
                 return (
                   <span
                     key={emoji}
-                    className={`inline-flex items-center gap-1 text-[10px] py-0.5 px-2 rounded-brand-md backdrop-blur border ${
-                      userHasReacted
+                    className={`inline-flex items-center gap-1 text-[10px] py-0.5 px-2 rounded-brand-md backdrop-blur border ${userHasReacted
                         ? 'bg-white/20 text-white border-white/20 font-bold'
                         : 'bg-black/40 text-brand-text-tertiary border-transparent'
-                    }`}
+                      }`}
                   >
                     <span>{emoji}</span>
                     <span>{count}</span>
