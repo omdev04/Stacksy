@@ -2,74 +2,50 @@
 
 ![Stacksy Preview](./screenshot/preview.png)
 
-Stacksy is a multi-user, real-time photo gallery where people can browse high-resolution photos, react with emojis, and leave comments — all synced live across every open tab and device. Built as a fun exploration of modern React patterns with a focus on real-time UX.
+Welcome to **Stacksy**! It's a real-time, multi-user photo gallery where people can browse awesome high-res photos, drop emoji reactions, and leave comments. The coolest part? Everything syncs instantly across all open tabs and devices! This project was built as a fun way to explore modern React patterns with a strong focus on real-time user experiences (UX).
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ Setup Instructions
 
-### Prerequisites
-You'll need [Node.js](https://nodejs.org/) installed — version 18 or higher works best.
+Getting Stacksy running on your local machine is super easy.
 
-### Installation
+**Prerequisites:** Make sure you have [Node.js](https://nodejs.org/) installed (version 18 or higher is recommended).
 
+**Installation:**
 ```bash
+# Install all the dependencies
 npm install
+
+# Start the local development server
 npm run dev
 ```
+Then, just open `http://localhost:5173` in your browser. That's it!
 
-Then open `http://localhost:5173` in your browser. That's it.
+### 🔑 Connecting Real APIs
+Out of the box, Stacksy works without any API keys! It uses a curated local photo library and a mock real-time database that still syncs across your local browser tabs. It's perfect for a quick demo.
 
----
-
-### 🔑 Setting Up API Keys
-
-The app works right away without any keys — it falls back to a curated local photo library and a mock real-time DB that actually syncs across browser tabs. Pretty handy for a quick demo.
-
-When you're ready to connect real data sources, you have two options:
-
-**Option A — Environment Variables**
-
-Rename `.env.example` to `.env` and fill in your keys:
-```env
-VITE_UNSPLASH_ACCESS_KEY=your_unsplash_key
-VITE_INSTANT_APP_ID=your_instantdb_app_id
-```
-
-**Option B — In-App (no file editing needed)**
-
-1. Open the app
-2. Click the **Settings gear** at the bottom-right
-3. Paste your keys and hit **Save & Reload**
-
-Keys get stored in `localStorage` so you won't need to re-enter them.
+But when you want to connect the real APIs (Unsplash and InstantDB), you have two choices:
+- **Option 1 (Using `.env`):** Rename the `.env.example` file to `.env` and paste your `VITE_UNSPLASH_ACCESS_KEY` and `VITE_INSTANT_APP_ID`.
+- **Option 2 (Directly in the App):** Click the settings gear icon at the bottom-right of the app, paste your keys, and hit "Save & Reload". These are safely stored in your browser's `localStorage`.
 
 ---
 
-## 🎨 Design Notes
+## 🌐 API Handling Strategy
 
-Styling is based on the [`DESIGN_stacksy.md`](DESIGN_stacksy.md) spec — dark-first, minimal, high-contrast. A few highlights:
+For photos, we use the [Unsplash API](https://unsplash.com/developers). To handle data fetching smartly, I went with `@tanstack/react-query`. 
 
-- **Font**: Outfit (Google Fonts), aliased to `saans` throughout
-- **Color palette**: Slate/charcoal base with white primary text — designed for readability, not decoration
-- **Motion**: Micro-animations kept under 200ms so they feel snappy, not distracting. Real-time feed items slide in with a keyframe animation.
-
----
-
-## 📸 How Photo Fetching Works
-
-Photos come from the [Unsplash API](https://unsplash.com/developers) using `@tanstack/react-query`'s `useInfiniteQuery`.
-
-- **Infinite scroll**: An `IntersectionObserver` watches a sentinel element at the bottom of the grid. When it enters the viewport, the next page loads automatically.
-- **Search**: Runs on form submit (Enter or clicking "Find"), not on every keystroke — this keeps things well within Unsplash's rate limits.
-- **No key? No problem**: Falls back to 24 hand-picked photos across four categories (Minimal, Nature, Architecture, Technology) with local pagination.
+- **Infinite Scrolling:** Instead of clicking "Next Page", I added an `IntersectionObserver` at the bottom of the grid. As soon as you scroll near the bottom, the next batch of photos loads automatically.
+- **Smart Searching:** To avoid hitting Unsplash's rate limits (which can happen fast if we search on every single keystroke), search only triggers when you hit 'Enter' or click the "Find" button.
+- **Fallback Mode:** If you don't provide an API key, the app gracefully falls back to a hand-picked local collection of 24 photos, fully paginated. No broken images!
 
 ---
 
-## ⚡ Real-Time Layer (InstantDB)
+## ⚡ InstantDB Schema & Usage
 
-Two entities keep everything in sync across clients:
+To make everything real-time, Stacksy uses **InstantDB**. It keeps two main things in sync: Comments and Reactions.
 
+Here is what the schema looks like:
 ```typescript
 const schema = i.schema({
   entities: {
@@ -79,60 +55,56 @@ const schema = i.schema({
       username: i.string(),
       userColor: i.string(),
       createdAt: i.number(),
+      // Embedded image data for rich feed previews
       imageThumb: i.string().optional(),
       imageUrl: i.string().optional(),
       imageAuthor: i.string().optional(),
       imageDesc: i.string().optional(),
     }),
     comments: i.entity({
+      // Similar structure for comments
       imageId: i.string(),
       text: i.string(),
-      username: i.string(),
-      userColor: i.string(),
-      createdAt: i.number(),
-      imageThumb: i.string().optional(),
-      imageUrl: i.string().optional(),
-      imageAuthor: i.string().optional(),
-      imageDesc: i.string().optional(),
+      // ... username, userColor, createdAt, and embedded image data
     }),
   },
 });
 ```
-
-Image metadata (thumbnail, author, description) is embedded directly into each record so the live activity feed can display rich previews without needing extra API calls.
-
----
-
-## 🧠 A Few React Decisions Worth Noting
-
-**Zustand for UI state** — things like which image is open, active category tab, and search query live in Zustand. It's lightweight and avoids the prop-drilling or context re-render headaches for this kind of volatile UI state.
-
-**Persistent identity** — on first load, the app generates a random CamelCase username (like `CosmicFalcon813`) and a pastel color badge. Both are saved to `localStorage`, so your "identity" survives page refreshes and feels consistent across sessions.
-
-**Event propagation** — emoji quick-reactions on cards call `e.stopPropagation()`. Without this, clicking a reaction would also trigger the card click and open the modal — a subtle but annoying bug to hit.
-
-**Accessible avatar colors** — a luminance formula checks each user's random badge color and automatically picks light or dark text to stay WCAG 2.2 AA compliant.
+**Why embed image data?** By saving the thumbnail URL and author info directly inside the reaction/comment record, our "Live Activity Feed" can show rich previews instantly without having to make extra API calls back to Unsplash!
 
 ---
 
-## 💡 Problems Worth Talking About
+## 🧠 Key React Decisions
 
-### The "No API Key" Problem
+Here are a few technical choices that keep the codebase clean and fast:
 
-Most real-time SDKs just crash if you initialize them with a null app ID. Instead of throwing an error or gating the whole app behind configuration, `src/db/client.ts` checks for the key upfront. If it's missing, it swaps in a mock DB backed by `localStorage` that listens to the `storage` event — so real-time sync still works across multiple local tabs, zero config required.
-
-### Feed Item Performance
-
-The live activity feed needs to show "CosmicFalcon reacted ❤️ on [photo]" with a thumbnail. The obvious approach would be fetching photo details from Unsplash when someone clicks a feed item — but that's a whole round trip for something that should feel instant.
-
-The fix: embed the image metadata (thumb URL, author, description) directly inside each reaction and comment record when it's saved. The feed always has everything it needs. No extra API calls, no loading states on click.
+- **Zustand for State Management:** Things like the search query, active tabs, and which image modal is currently open are stored in Zustand. It's incredibly lightweight and saves us from messy prop-drilling or Context re-render issues.
+- **Persistent User Identities:** When you first open the app, it randomly generates a fun name (like `CosmicFalcon813`) and a color badge for you. These are saved in `localStorage`, so even if you refresh, you keep your identity!
+- **Event Propagation Magic:** When you click a quick-reaction emoji on a photo card, we use `e.stopPropagation()`. Without this tiny line of code, clicking an emoji would also click the photo behind it and accidentally open the image modal.
+- **Accessible UI:** A custom math formula checks your randomly generated user color. If it's a light color, it gives you dark text. If it's dark, it gives you white text. This ensures everything is always easy to read (WCAG 2.2 AA compliant).
+- **Optimized Feed UI:** To prevent infinite scrolling when a user interacts multiple times, consecutive activities by the same user on the same photo are smartly grouped together into a single compact feed item.
 
 ---
 
-## 🔮 What I'd Add Next
+## 🧗 Challenges Faced & How I Solved Them
 
-A few things I'd want to build out with more time:
+### 1. The "No API Key" Crash
+**Problem:** Most real-time database SDKs just crash the entire app if you initialize them without an App ID. I didn't want to force users to configure keys just to see the app working.
+**Solution:** I built a check in `src/db/client.ts`. If it doesn't find an InstantDB key, it swaps the real DB with a custom "Mock DB" backed by `localStorage`. It listens to browser storage events, meaning you still get a real-time sync experience across different tabs on your computer with zero setup!
 
-1. **Explicit optimistic rollbacks** — InstantDB handles some of this automatically, but I'd want proper rollback logic in place for when writes fail mid-connection-drop.
-2. **Image uploads** — let users contribute their own photos instead of pulling from Unsplash. A Supabase storage bucket would fit cleanly into the existing architecture.
-3. **Reaction confetti** — `canvas-confetti` bursting from the emoji badge on react. Completely unnecessary. Absolutely doing it.
+### 2. Live Feed Performance Delay
+**Problem:** The live feed needs to say "CosmicFalcon reacted ❤️ on [Photo Thumbnail]". Fetching that thumbnail from Unsplash every time someone clicks a feed item requires an extra network request, causing a slight delay.
+**Solution:** I chose to embed the necessary image metadata (thumbnail URL, author name) directly into the reaction/comment payload when saving it to the database. Now, the feed has everything it needs instantly. Zero extra API calls!
+
+---
+
+## 🔮 What I Would Improve With More Time
+
+If I had a bit more time to keep building, here are the top three things I'd add:
+
+1. **Explicit Optimistic Rollbacks:** While InstantDB handles optimistic UI updates (showing your comment immediately before it saves), I'd want to write custom logic to cleanly roll it back and notify the user if their internet drops and the save fails.
+2. **User Image Uploads:** Right now we rely on Unsplash. It would be awesome to let users upload their own photos. A Supabase storage bucket would fit into this architecture perfectly.
+3. **Reaction Confetti 🎉:** I want to use `canvas-confetti` so that whenever you click an emoji, tiny confetti pieces burst out of the button. Is it completely necessary? No. Is it incredibly fun? Absolutely.
+
+---
+*Built with ❤️ and React.*
