@@ -1,6 +1,6 @@
 # Stacksy — Real-Time Photo Interaction Gallery
 
-![Stacksy Preview](./preview.png)
+![Stacksy Preview](./screenshot/preview.png)
 
 Stacksy is a multi-user, real-time photo gallery where people can browse high-resolution photos, react with emojis, and leave comments — all synced live across every open tab and device. Built as a fun exploration of modern React patterns with a focus on real-time UX.
 
