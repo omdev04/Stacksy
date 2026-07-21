@@ -150,7 +150,7 @@ export const Modal: React.FC = () => {
       {/* Modal Card */}
       <div
         ref={modalRef}
-        className="relative bg-brand-surface-muted border-0 md:border border-neutral-900/80 rounded-none md:rounded-brand-sm w-full h-full md:h-[85vh] max-w-5xl flex flex-col md:flex-row overflow-hidden shadow-none md:shadow-2xl animate-slide-in outline-none"
+        className="relative bg-brand-surface-muted border-0 md:border border-neutral-900/80 rounded-none md:rounded-brand-sm w-full h-[100dvh] md:h-[85vh] max-w-5xl flex flex-col md:flex-row overflow-hidden shadow-none md:shadow-2xl animate-slide-in outline-none"
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
@@ -311,7 +311,7 @@ export const Modal: React.FC = () => {
           </div>
 
           {/* Comment Form */}
-          <form onSubmit={handlePostComment} className="p-4 shrink-0 bg-brand-surface-muted border-t border-neutral-900/50">
+          <form onSubmit={handlePostComment} className="p-4 pb-8 md:pb-4 shrink-0 bg-brand-surface-muted border-t border-neutral-900/50">
             <div className="flex items-center gap-2 bg-neutral-900 rounded-full p-1 pl-4 focus-within:ring-1 focus-within:ring-neutral-700 transition-all">
               <input
                 type="text"

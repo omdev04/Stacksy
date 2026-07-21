@@ -60,3 +60,12 @@
   outline: 2px solid #ffffff;
   outline-offset: 2px;
 }
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

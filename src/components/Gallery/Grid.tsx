@@ -84,21 +84,23 @@ export const Grid: React.FC = () => {
         </div>
 
         {/* Search Input (Mobile Only) */}
-        <form onSubmit={handleSearchSubmit} className="relative w-full px-2 md:hidden">
-          <input
-            type="text"
-            placeholder="Search high-res photos..."
-            value={searchVal}
-            onChange={(e) => setSearchVal(e.target.value)}
-            className="w-full bg-brand-surface-base border border-neutral-800 hover:border-neutral-700 text-white rounded-brand-xs p-brand-2 pl-9 pr-16 text-brand-sm focus:outline-none focus:border-white focus:ring-0 transition-colors"
-          />
-          <Search className="w-4 h-4 text-brand-text-tertiary absolute left-3 top-1/2 -translate-y-1/2" />
-          <button
-            type="submit"
-            className="absolute right-1 top-1/2 -translate-y-1/2 bg-white hover:bg-neutral-200 text-brand-text-primary px-brand-2 py-1 rounded-[6px] text-[10px] font-extrabold transition-colors uppercase"
-          >
-            Find
-          </button>
+        <form onSubmit={handleSearchSubmit} className="w-full px-2 md:hidden">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Search high-res photos..."
+              value={searchVal}
+              onChange={(e) => setSearchVal(e.target.value)}
+              className="w-full bg-brand-surface-base border border-neutral-800 hover:border-neutral-700 text-white rounded-brand-xs p-brand-2 pl-9 pr-14 text-brand-sm focus:outline-none focus:border-white focus:ring-0 transition-colors"
+            />
+            <Search className="w-4 h-4 text-brand-text-tertiary absolute left-3 top-1/2 -translate-y-1/2" />
+            <button
+              type="submit"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-white hover:bg-neutral-200 text-brand-text-primary px-brand-2 py-1 rounded-[6px] text-[10px] font-extrabold transition-colors uppercase"
+            >
+              Find
+            </button>
+          </div>
         </form>
       </div>
 
