@@ -19,6 +19,19 @@ interface FeedItem {
   imageDesc?: string;
 }
 
+interface GroupedFeedItem {
+  id: string;
+  username: string;
+  userColor: string;
+  imageId: string;
+  imageThumb?: string;
+  imageUrl?: string;
+  imageAuthor?: string;
+  imageDesc?: string;
+  createdAt: number;
+  activities: FeedItem[];
+}
+
 // Shimmer Skeleton Loading Component for a premium feel
 const StreamSkeleton: React.FC = () => {
   return (
@@ -77,11 +90,11 @@ const StreamEmpty: React.FC = () => {
 
 // Interactive Feed Item Component
 interface ActivityItemProps {
-  item: FeedItem;
+  group: GroupedFeedItem;
   onClick: () => void;
 }
 
-const ActivityItem: React.FC<ActivityItemProps> = ({ item, onClick }) => {
+const ActivityItem: React.FC<ActivityItemProps> = ({ group, onClick }) => {
   const getRelativeTime = (timestamp: number) => {
     const elapsed = Date.now() - timestamp;
     if (elapsed < 60000) return 'just now';
@@ -99,10 +112,10 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ item, onClick }) => {
     }
   };
 
-  const isComment = item.type === 'comment';
-  const ariaLabel = isComment
-    ? `${item.username} commented: "${item.text}" on image by ${item.imageAuthor || 'unknown'}`
-    : `${item.username} reacted ${item.emoji} to image by ${item.imageAuthor || 'unknown'}`;
+  const comments = group.activities.filter(a => a.type === 'comment');
+  const reactions = group.activities.filter(a => a.type === 'reaction');
+
+  const ariaLabel = `${group.username} interacted with image by ${group.imageAuthor || 'unknown'}`;
 
   return (
     <div
@@ -114,41 +127,49 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ item, onClick }) => {
       className="w-full text-left p-brand-3 px-brand-4 flex items-start gap-brand-3 hover:bg-neutral-900/40 focus:bg-neutral-900/40 active:scale-[0.98] transition-all duration-brand-fast cursor-pointer animate-slide-in group focus-visible-ring outline-none select-none border-b border-neutral-900/40"
     >
       {/* Avatar */}
-      <Avatar username={item.username} color={item.userColor} size="sm" />
+      <Avatar username={group.username} color={group.userColor} size="sm" />
 
       {/* Text Summary */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-brand-2">
-          <span className="text-brand-xs font-bold text-white truncate max-w-[120px]">{item.username}</span>
-          <span className="text-brand-xs text-brand-text-tertiary font-normal shrink-0">{getRelativeTime(item.createdAt)}</span>
+          <span className="text-brand-xs font-bold text-white truncate max-w-[120px]">{group.username}</span>
+          <span className="text-brand-xs text-brand-text-tertiary font-normal shrink-0">{getRelativeTime(group.createdAt)}</span>
         </div>
         
-        <div className="text-brand-xs mt-brand-1 leading-snug flex items-start gap-brand-1">
-          {isComment ? (
-            <div className="min-w-0 flex-1 flex items-start gap-brand-1">
+        <div className="mt-brand-1 flex flex-col gap-1.5">
+          {comments.map((comment) => (
+            <div key={comment.id} className="text-brand-xs leading-snug flex items-start gap-brand-1">
               <MessageSquare className="w-3.5 h-3.5 text-brand-text-tertiary mt-[1px] shrink-0" />
-              <span className="text-brand-text-tertiary">commented: </span>
-              <span className="text-white italic font-normal line-clamp-2">
-                &quot;{item.text}&quot;
-              </span>
+              <div className="min-w-0 flex-1 break-words">
+                <span className="text-brand-text-tertiary">commented: </span>
+                <span className="text-white italic font-normal line-clamp-2 inline">
+                  &quot;{comment.text}&quot;
+                </span>
+              </div>
             </div>
-          ) : (
-            <div className="flex items-center gap-brand-1">
-              <span className="text-brand-text-tertiary">reacted: </span>
-              <span className="text-white font-bold inline-block mx-brand-1">
-                {item.emoji}
-              </span>
+          ))}
+          
+          {reactions.length > 0 && (
+            <div className="text-brand-xs leading-snug flex items-start gap-brand-1 mt-0.5">
+              <span className="text-brand-text-tertiary shrink-0 mt-[1px]">reacted:</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {reactions.map((reaction) => (
+                  <span key={reaction.id} className="text-sm leading-none inline-block hover:scale-125 transition-transform cursor-default">
+                    {reaction.emoji}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
       </div>
 
       {/* Mini Image Preview */}
-      {item.imageThumb && (
+      {group.imageThumb && (
         <div className="w-8 h-8 rounded-brand-xs overflow-hidden shrink-0 border border-neutral-900 group-hover:border-neutral-700 focus:border-neutral-700 transition-colors bg-neutral-950">
           <img
-            src={item.imageThumb}
-            alt={`Preview image by ${item.imageAuthor || 'Artist'}`}
+            src={group.imageThumb}
+            alt={`Preview image by ${group.imageAuthor || 'Artist'}`}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -215,32 +236,62 @@ export const Stream: React.FC = () => {
 
   // Merge and sort by timestamp descending
   const feedItems = [...rawComments, ...rawReactions]
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .slice(0, 30); // Show top 30 merged interactions
+    .sort((a, b) => b.createdAt - a.createdAt);
 
-  const handleFeedItemClick = (item: FeedItem) => {
-    if (!item.imageUrl) return;
-    store.setSelectedImageId(item.imageId);
+  // Group consecutive activities by the same user on the same image
+  const groupedFeedItems = feedItems.reduce((acc, item) => {
+    const lastGroup = acc[acc.length - 1];
+    
+    // Group if same user and same image
+    if (lastGroup && lastGroup.username === item.username && lastGroup.imageId === item.imageId) {
+      // Add to existing group
+      lastGroup.activities.push(item);
+      // Ensure group takes the most recent timestamp
+      lastGroup.createdAt = Math.max(lastGroup.createdAt, item.createdAt);
+    } else {
+      // Create new group
+      acc.push({
+        id: `group-${item.id}`,
+        username: item.username,
+        userColor: item.userColor,
+        imageId: item.imageId,
+        imageThumb: item.imageThumb,
+        imageUrl: item.imageUrl,
+        imageAuthor: item.imageAuthor,
+        imageDesc: item.imageDesc,
+        createdAt: item.createdAt,
+        activities: [item],
+      });
+    }
+    return acc;
+  }, [] as GroupedFeedItem[]);
+
+  // Limit grouped items for display
+  const displayItems = groupedFeedItems.slice(0, 30);
+
+  const handleFeedItemClick = (group: GroupedFeedItem) => {
+    if (!group.imageUrl) return;
+    store.setSelectedImageId(group.imageId);
     store.setSelectedImageDetails({
-      url: item.imageUrl,
-      description: item.imageDesc || 'Artwork',
-      author: item.imageAuthor || 'Artist',
+      url: group.imageUrl,
+      description: group.imageDesc || 'Artwork',
+      author: group.imageAuthor || 'Artist',
       authorUrl: `https://unsplash.com`,
-      downloadUrl: item.imageUrl,
+      downloadUrl: group.imageUrl,
     });
   };
 
-  if (feedItems.length === 0) {
+  if (displayItems.length === 0) {
     return <StreamEmpty />;
   }
 
   return (
     <div className="divide-y divide-neutral-900 select-none">
-      {feedItems.map((item) => (
+      {displayItems.map((group) => (
         <ActivityItem
-          key={item.id}
-          item={item}
-          onClick={() => handleFeedItemClick(item)}
+          key={group.id}
+          group={group}
+          onClick={() => handleFeedItemClick(group)}
         />
       ))}
     </div>
