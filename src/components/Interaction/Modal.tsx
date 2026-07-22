@@ -18,7 +18,7 @@ export const Modal: React.FC = () => {
   const commentsEndRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Real-time query for this image's comments and reactions
+ 
   const { data, isLoading } = db.useQuery(
     imageId
       ? {
@@ -39,16 +39,15 @@ export const Modal: React.FC = () => {
   const comments = data?.comments || [];
   const reactions = data?.reactions || [];
 
-  // Group reactions for count display
+  
   const reactionCounts = reactions.reduce((acc: { [emoji: string]: number }, r: any) => {
     acc[r.emoji] = (acc[r.emoji] || 0) + 1;
     return acc;
   }, {});
 
-  // Check if current user has reacted with specific emoji
+  
   const userReactions = reactions.filter((r: any) => r.username === username);
 
-  // Dynamic reactions list (common seeds + custom added ones)
   const activeEmojis = Array.from(
     new Set([
       '❤️',
@@ -59,7 +58,7 @@ export const Modal: React.FC = () => {
     ])
   );
 
-  // Close modal on ESC keypress
+  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -70,14 +69,14 @@ export const Modal: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [store]);
 
-  // Focus modal container on mount for accessibility
+
   useEffect(() => {
     if (imageId && modalRef.current) {
       modalRef.current.focus();
     }
   }, [imageId]);
 
-  // Auto-scroll comments to bottom when new ones are added
+
   useEffect(() => {
     commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [comments.length]);
@@ -133,21 +132,20 @@ export const Modal: React.FC = () => {
     }
   };
 
-  // Format date helper
+ 
   const formatDate = (timestamp: number) => {
     const d = new Date(timestamp);
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' · ' + d.toLocaleDateString([], { month: 'short', day: 'numeric' });
   };
 
-  // Sort comments chronologically (ascending for discussion feed)
+
   const sortedComments = [...comments].sort((a, b) => a.createdAt - b.createdAt);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-0 md:p-6 select-none">
-      {/* Click outside to close */}
       <div className="absolute inset-0 hidden md:block" onClick={() => store.setSelectedImageId(null)} />
 
-      {/* Modal Card */}
+      
       <div
         ref={modalRef}
         className="relative bg-brand-surface-muted border-0 md:border border-neutral-900/80 rounded-none md:rounded-brand-sm w-full h-[100dvh] md:h-[85vh] max-w-5xl flex flex-col md:flex-row overflow-hidden shadow-none md:shadow-2xl animate-slide-in outline-none"
@@ -155,9 +153,9 @@ export const Modal: React.FC = () => {
         role="dialog"
         aria-modal="true"
       >
-        {/* Left Column: Image Area */}
+        
         <div className="w-full bg-black flex items-center justify-center relative p-0 shrink-0 h-[40vh] md:h-auto md:flex-1 md:min-h-0">
-          {/* Close Button floating top-right of the image area */}
+          
           <button
             onClick={() => store.setSelectedImageId(null)}
             className="absolute top-4 right-4 bg-black/60 hover:bg-neutral-900 backdrop-blur text-white hover:text-white p-2.5 rounded-full border border-neutral-800/80 hover:border-neutral-700 transition-all z-20 focus-visible-ring hover:scale-105 active:scale-95"
@@ -173,7 +171,7 @@ export const Modal: React.FC = () => {
           />
         </div>
 
-        {/* Right Column: Interaction Hub sidebar */}
+        
         <div className="w-full md:w-[400px] bg-brand-surface-muted border-t md:border-t-0 md:border-l border-neutral-900/40 flex flex-col flex-1 min-h-0 min-w-0">
 
           {/* Header Info */}

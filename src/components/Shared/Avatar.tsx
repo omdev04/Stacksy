@@ -19,7 +19,7 @@ export const Avatar: React.FC<AvatarProps> = ({ username, color, size = 'md' }) 
     lg: 'w-16 h-16 text-[20px]',
   };
 
-  // Determine text color based on background luminance for high contrast compliance
+  
   const getTextColor = (hex: string) => {
     const c = hex.substring(1);
     const rgb = parseInt(c, 16);

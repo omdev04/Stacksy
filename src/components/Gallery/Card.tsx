@@ -16,7 +16,7 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
   const username = store.username;
   const userColor = store.userColor;
 
-  // Real-time query for this image's reactions and comments count
+
   const { data } = db.useQuery({
     reactions: {
       $: {
@@ -33,25 +33,23 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
   const reactions = data?.reactions || [];
   const comments = data?.comments || [];
 
-  // Group reactions by emoji to calculate counts
+
   const reactionCounts = reactions.reduce((acc: { [emoji: string]: number }, r: any) => {
     acc[r.emoji] = (acc[r.emoji] || 0) + 1;
     return acc;
   }, {});
 
-  // Check if current user has reacted with specific emoji
+
   const userReactions = reactions.filter((r: any) => r.username === username);
 
   const handleQuickReact = (emoji: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // prevent opening the focused modal
+    e.stopPropagation();
 
     const existingReaction = userReactions.find((r: any) => r.emoji === emoji);
 
     if (existingReaction) {
-      // Delete existing reaction (toggle behavior)
       db.transact(db.tx.reactions[existingReaction.id].delete());
     } else {
-      // Add new reaction
       db.transact(
         db.tx.reactions[id()].update({
           imageId: photo.id,
@@ -91,7 +89,7 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
         }
       }}
     >
-      {/* Background Image */}
+
       <img
         src={photo.urls.small}
         alt={photo.alt_description || 'gallery image'}
@@ -99,9 +97,9 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
         loading="lazy"
       />
 
-      {/* Grid Hover Overlay UI */}
+
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/60 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-brand-instant flex flex-col justify-between p-brand-3">
-        {/* Top: Quick Emoji Picker bar */}
+
         <div className="flex items-center justify-center gap-brand-2 bg-neutral-950/60 backdrop-blur-md py-1.5 px-3 rounded-brand-md border border-white/5 mx-auto animate-slide-in">
           {QUICK_EMOJIS.map((emoji) => {
             const hasReacted = userReactions.some((r: any) => r.emoji === emoji);
@@ -129,9 +127,9 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
           </button>
         </div>
 
-        {/* Bottom: Info, Comments and Aggregated Live Counts */}
+
         <div className="space-y-brand-2">
-          {/* Active Reaction Badges (Live sync update) */}
+
           {Object.keys(reactionCounts).length > 0 && (
             <div className="flex flex-wrap gap-brand-1">
               {(Object.entries(reactionCounts) as [string, number][]).map(([emoji, count]) => {
@@ -140,8 +138,8 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
                   <span
                     key={emoji}
                     className={`inline-flex items-center gap-1 text-[10px] py-0.5 px-2 rounded-brand-md backdrop-blur border ${userHasReacted
-                        ? 'bg-white/20 text-white border-white/20 font-bold'
-                        : 'bg-black/40 text-brand-text-tertiary border-transparent'
+                      ? 'bg-white/20 text-white border-white/20 font-bold'
+                      : 'bg-black/40 text-brand-text-tertiary border-transparent'
                       }`}
                   >
                     <span>{emoji}</span>
@@ -152,7 +150,7 @@ export const Card: React.FC<CardProps> = ({ photo }) => {
             </div>
           )}
 
-          {/* Author credit & comments count */}
+
           <div className="flex items-center justify-between">
             <div className="min-w-0">
               <p className="text-[10px] text-brand-text-tertiary leading-none uppercase tracking-wider">Artist</p>

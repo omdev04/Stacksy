@@ -22,12 +22,10 @@ export const Grid: React.FC = () => {
   const [searchVal, setSearchVal] = useState(store.searchQuery);
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // Sync internal search state with global store
+
   useEffect(() => {
     setSearchVal(store.searchQuery);
   }, [store.searchQuery]);
-
-  // Infinite scroll intersection observer setup
   useEffect(() => {
     if (!hasNextPage || isFetchingNextPage) return;
 
@@ -65,9 +63,9 @@ export const Grid: React.FC = () => {
 
   return (
     <div className="space-y-brand-4 flex flex-col h-full">
-      {/* Search & Category Filter Ribbon */}
+
       <div className="flex flex-col gap-brand-3 md:flex-row md:items-center justify-center">
-        {/* Categories */}
+
         <div className="flex items-center justify-start md:justify-center gap-brand-2 overflow-x-auto pb-2 pt-1 px-2 w-full scrollbar-none">
           {CATEGORIES.map((cat) => (
             <button
@@ -83,7 +81,6 @@ export const Grid: React.FC = () => {
           ))}
         </div>
 
-        {/* Search Input (Mobile Only) */}
         <form onSubmit={handleSearchSubmit} className="w-full px-2 md:hidden">
           <div className="relative w-full">
             <input
@@ -104,7 +101,6 @@ export const Grid: React.FC = () => {
         </form>
       </div>
 
-      {/* Fallback Photo Banner Notification */}
       {isUsingFallback && (
         <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 p-brand-3 rounded-brand-xs text-[11px] flex items-start gap-brand-2 leading-relaxed">
           <Info className="w-4 h-4 shrink-0 mt-0.5" />
@@ -114,11 +110,10 @@ export const Grid: React.FC = () => {
         </div>
       )}
 
-      {/* Main Photo Grid */}
+    
       {isLoading ? (
         <div className="flex-1 flex flex-col items-center justify-center py-32 gap-4">
           <div className="relative w-12 h-12 flex items-center justify-center">
-            {/* Double outer ring pulsing */}
             <span className="absolute inset-0 rounded-full border-2 border-white/10 animate-ping"></span>
             <span className="w-8 h-8 rounded-full border-t-2 border-r-2 border-white animate-spin"></span>
           </div>
@@ -150,7 +145,7 @@ export const Grid: React.FC = () => {
             ))}
           </div>
 
-          {/* Observer target element for infinite scroll */}
+
           {hasNextPage && (
             <div ref={observerTarget} className="flex flex-col items-center justify-center py-12 gap-3">
               <div className="flex gap-1.5 items-center justify-center">

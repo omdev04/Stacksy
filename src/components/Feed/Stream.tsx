@@ -58,7 +58,7 @@ const StreamSkeleton: React.FC = () => {
   );
 };
 
-// Rich Error Component
+
 interface StreamErrorProps {
   message: string;
 }
@@ -75,7 +75,7 @@ const StreamError: React.FC<StreamErrorProps> = ({ message }) => {
   );
 };
 
-// Beautiful Empty State Component
+
 const StreamEmpty: React.FC = () => {
   return (
     <div className="p-brand-4 py-8 flex flex-col items-center justify-center text-center gap-brand-2 select-none min-h-[200px]">
@@ -88,7 +88,7 @@ const StreamEmpty: React.FC = () => {
   );
 };
 
-// Interactive Feed Item Component
+
 interface ActivityItemProps {
   group: GroupedFeedItem;
   onClick: () => void;
@@ -182,7 +182,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ group, onClick }) => {
 export const Stream: React.FC = () => {
   const store = useStore();
 
-  // Query latest 25 comments and reactions
+  
   const { data, isLoading, error } = db.useQuery({
     comments: {
       $: {
@@ -234,19 +234,19 @@ export const Stream: React.FC = () => {
     imageDesc: r.imageDesc,
   }));
 
-  // Merge and sort by timestamp descending
+ 
   const feedItems = [...rawComments, ...rawReactions]
     .sort((a, b) => b.createdAt - a.createdAt);
 
-  // Group consecutive activities by the same user on the same image
+
   const groupedFeedItems = feedItems.reduce((acc, item) => {
     const lastGroup = acc[acc.length - 1];
     
-    // Group if same user and same image
+
     if (lastGroup && lastGroup.username === item.username && lastGroup.imageId === item.imageId) {
-      // Add to existing group
+      
       lastGroup.activities.push(item);
-      // Ensure group takes the most recent timestamp
+
       lastGroup.createdAt = Math.max(lastGroup.createdAt, item.createdAt);
     } else {
       // Create new group
